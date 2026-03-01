@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anypoint Monitoring - Alerts History</title>
+    <title>Anypoint Exchange - LLM Proxies</title>
     <style>
         * {
             margin: 0;
@@ -104,34 +104,323 @@
             padding: 0 20px;
         }
 
-        .page-card {
+        .asset-card {
             background: white;
             border-radius: 4px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             overflow: hidden;
         }
 
-        .page-header {
+        .asset-header {
             padding: 25px 30px;
             border-bottom: 1px solid #e0e0e0;
         }
 
-        .page-title {
+        .asset-title {
             font-size: 28px;
             color: #333;
             margin-bottom: 10px;
         }
 
-        .page-meta {
+        .asset-meta {
             color: #666;
             font-size: 14px;
         }
 
-        .page-body {
+        .asset-body {
             padding: 30px;
         }
 
-        /* Filters Section */
+        .section-title {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        thead {
+            background-color: #f9f9f9;
+        }
+
+        th {
+            text-align: left;
+            padding: 15px;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #e0e0e0;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #555;
+            font-size: 14px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .model-name {
+            font-weight: 600;
+            color: #00a2df;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge-active {
+            background-color: #e6f7ff;
+            color: #0066cc;
+        }
+
+        .badge-popular {
+            background-color: #fff7e6;
+            color: #d46b08;
+        }
+
+        .btn-request {
+            background-color: #00a2df;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-request:hover {
+            background-color: #0081b3;
+        }
+
+        .provider-list {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .provider-tag {
+            background-color: #f0f0f0;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #555;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.2s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 4px;
+            width: 70%;
+            max-width: 800px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            padding: 20px 30px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 22px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .close {
+            color: #999;
+            font-size: 28px;
+            font-weight: 300;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close:hover {
+            color: #333;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .modal-footer {
+            padding: 20px 30px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn-continue {
+            background-color: #00a2df;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-continue:hover {
+            background-color: #0081b3;
+        }
+
+        .btn-cancel {
+            background-color: white;
+            color: #666;
+            border: 1px solid #d9d9d9;
+            padding: 10px 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-cancel:hover {
+            border-color: #00a2df;
+            color: #00a2df;
+        }
+
+        .form-table {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .form-table td {
+            padding: 12px 0;
+            border: none;
+        }
+
+        .form-table tr:hover {
+            background-color: transparent;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #333;
+            width: 200px;
+            padding-right: 20px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #00a2df;
+        }
+
+        .credentials-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .credentials-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            font-size: 14px;
+            background-color: #f9f9f9;
+            font-family: monospace;
+        }
+
+        .copy-btn {
+            background-color: #f0f0f0;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 13px;
+            color: #555;
+        }
+
+        .copy-btn:hover {
+            background-color: #e6e6e6;
+            border-color: #00a2df;
+        }
+
+        .copy-btn.copied {
+            background-color: #d4f4dd;
+            border-color: #52c41a;
+            color: #52c41a;
+        }
+
+        .credentials-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        /* Filters Section Styles */
         .filters-container {
             padding: 20px;
             background-color: white;
@@ -237,124 +526,6 @@
             color: #00a2df;
         }
 
-        /* Table Styles */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-        }
-
-        thead {
-            background-color: #f9f9f9;
-        }
-
-        th {
-            text-align: left;
-            padding: 15px;
-            font-weight: 600;
-            color: #333;
-            border-bottom: 2px solid #e0e0e0;
-            font-size: 14px;
-        }
-
-        td {
-            padding: 15px;
-            border-bottom: 1px solid #e0e0e0;
-            color: #555;
-            font-size: 14px;
-        }
-
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        tr:hover {
-            background-color: #f9f9f9;
-        }
-
-        .alert-name {
-            font-weight: 600;
-            color: #333;
-        }
-
-        .timestamp {
-            color: #666;
-            font-size: 13px;
-        }
-
-        /* Severity Badges */
-        .badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-
-        .badge-critical {
-            background-color: #fff1f0;
-            color: #cf1322;
-        }
-
-        .badge-warning {
-            background-color: #fff7e6;
-            color: #d46b08;
-        }
-
-        .badge-info {
-            background-color: #e6f7ff;
-            color: #0066cc;
-        }
-
-        /* Metric Tags */
-        .metric-tag {
-            background-color: #f0f0f0;
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 13px;
-            color: #555;
-            font-weight: 500;
-        }
-
-        .metric-cpu {
-            background-color: #fff7e6;
-            color: #d46b08;
-        }
-
-        .metric-memory {
-            background-color: #e6f7ff;
-            color: #0066cc;
-        }
-
-        .metric-disk {
-            background-color: #f6ffed;
-            color: #389e0d;
-        }
-
-        .metric-network {
-            background-color: #f9f0ff;
-            color: #722ed1;
-        }
-
-        /* Buttons */
-        .btn-view {
-            background-color: #00a2df;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-view:hover {
-            background-color: #0081b3;
-        }
-
         .table-wrapper {
             position: relative;
         }
@@ -385,181 +556,6 @@
             text-decoration: underline;
         }
 
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            animation: fadeIn 0.2s;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .modal-content {
-            background-color: white;
-            margin: 5% auto;
-            padding: 0;
-            border-radius: 4px;
-            width: 70%;
-            max-width: 900px;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            animation: slideIn 0.3s;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateY(-50px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .modal-header {
-            padding: 20px 30px;
-            border-bottom: 1px solid #e0e0e0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            background: white;
-            z-index: 1;
-        }
-
-        .modal-title {
-            font-size: 22px;
-            color: #333;
-            font-weight: 500;
-        }
-
-        .close {
-            color: #999;
-            font-size: 28px;
-            font-weight: 300;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-
-        .close:hover {
-            color: #333;
-        }
-
-        .modal-body {
-            padding: 30px;
-        }
-
-        .diagnosis-section {
-            margin-bottom: 25px;
-        }
-
-        .diagnosis-section:last-child {
-            margin-bottom: 0;
-        }
-
-        .diagnosis-heading {
-            font-size: 16px;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .diagnosis-content {
-            background-color: #f9f9f9;
-            padding: 15px;
-            border-radius: 4px;
-            border-left: 3px solid #00a2df;
-        }
-
-        .diagnosis-item {
-            margin-bottom: 10px;
-            font-size: 14px;
-            color: #555;
-            line-height: 1.6;
-        }
-
-        .diagnosis-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .diagnosis-label {
-            font-weight: 600;
-            color: #333;
-            display: inline-block;
-            min-width: 150px;
-        }
-
-        .code-block {
-            background-color: #2d2d2d;
-            color: #f8f8f2;
-            padding: 15px;
-            border-radius: 4px;
-            font-family: 'Monaco', 'Courier New', monospace;
-            font-size: 13px;
-            overflow-x: auto;
-            margin-top: 10px;
-        }
-
-        .recommendation-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .recommendation-list li {
-            padding: 8px 0;
-            padding-left: 24px;
-            position: relative;
-        }
-
-        .recommendation-list li:before {
-            content: "✓";
-            position: absolute;
-            left: 0;
-            color: #52c41a;
-            font-weight: bold;
-        }
-
-        .modal-footer {
-            padding: 20px 30px;
-            border-top: 1px solid #e0e0e0;
-            display: flex;
-            justify-content: flex-end;
-            position: sticky;
-            bottom: 0;
-            background: white;
-        }
-
-        .btn-close {
-            background-color: #00a2df;
-            color: white;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 4px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .btn-close:hover {
-            background-color: #0081b3;
-        }
-
         @media (max-width: 768px) {
             .filters-row {
                 flex-direction: column;
@@ -573,11 +569,6 @@
             .btn-clear-filters {
                 width: 100%;
             }
-
-            .modal-content {
-                width: 95%;
-                margin: 2% auto;
-            }
         }
     </style>
 </head>
@@ -589,9 +580,9 @@
                 <nav>
                     <ul class="nav-menu">
                         <li><a href="#">Design Center</a></li>
-                        <li><a href="#">Exchange</a></li>
+                        <li><a href="#" class="active">Exchange</a></li>
                         <li><a href="#">Runtime Manager</a></li>
-                        <li><a href="#" class="active">Monitoring</a></li>
+                        <li><a href="#">API Manager</a></li>
                     </ul>
                 </nav>
             </div>
@@ -605,15 +596,15 @@
     </div>
 
     <div class="container">
-        <div class="page-card">
-            <div class="page-header">
-                <h2 class="page-title">Alerts History</h2>
-                <div class="page-meta">
-                    Organization: Enterprise AI • Environment: Production • Last Updated: Mar 1, 2026
+        <div class="asset-card">
+            <div class="asset-header">
+                <h2 class="asset-title">LLM Proxy Catalog</h2>
+                <div class="asset-meta">
+                    Organization: Enterprise AI • Type: API Catalog • Published: Feb 28, 2026
                 </div>
             </div>
 
-            <div class="page-body">
+            <div class="asset-body">
                 <div class="filters-container">
                     <div class="search-section">
                         <div class="search-wrapper">
@@ -621,27 +612,32 @@
                             <input type="text"
                                    id="searchInput"
                                    class="search-input"
-                                   placeholder="Search alerts by name...">
+                                   placeholder="Search proxies by name...">
                         </div>
                     </div>
                     <div class="filters-row">
                         <div class="filter-group">
-                            <label for="metricFilter" class="filter-label">Metric Type</label>
-                            <select id="metricFilter" class="filter-select">
-                                <option value="all">All Metrics</option>
-                                <option value="CPU">CPU</option>
-                                <option value="Memory">Memory</option>
-                                <option value="Disk">Disk</option>
-                                <option value="Network">Network</option>
+                            <label for="providerFilter" class="filter-label">Provider</label>
+                            <select id="providerFilter" class="filter-select">
+                                <option value="all">All Providers</option>
+                                <option value="OpenAI">OpenAI</option>
+                                <option value="Gemini">Gemini</option>
                             </select>
                         </div>
                         <div class="filter-group">
-                            <label for="severityFilter" class="filter-label">Severity</label>
-                            <select id="severityFilter" class="filter-select">
-                                <option value="all">All Severities</option>
-                                <option value="Critical">Critical</option>
-                                <option value="Warning">Warning</option>
-                                <option value="Info">Info</option>
+                            <label for="routingFilter" class="filter-label">Routing Strategy</label>
+                            <select id="routingFilter" class="filter-select">
+                                <option value="all">All Strategies</option>
+                                <option value="Model based">Model based</option>
+                                <option value="Semantic">Semantic</option>
+                                <option value="Latency based">Latency based</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="statusFilter" class="filter-label">Status</label>
+                            <select id="statusFilter" class="filter-select">
+                                <option value="all">All Status</option>
+                                <option value="Active">Active</option>
                             </select>
                         </div>
                         <button id="clearFiltersBtn" class="btn-clear-filters" style="display: none;">
@@ -654,308 +650,224 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Alert Name</th>
-                            <th>Metric</th>
-                            <th>Severity</th>
-                            <th>Timestamp</th>
-                            <th>Application</th>
-                            <th>Diagnosis</th>
+                            <th>LLM Proxy</th>
+                            <th>Providers</th>
+                            <th>Routing strategy</th>
+                            <th>Status</th>
+                            <th>Access</th>
+                            <th>cURL request samples</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="alert-name">High CPU Usage Detected</td>
-                            <td><span class="metric-tag metric-cpu">CPU</span></td>
-                            <td><span class="badge badge-critical">Critical</span></td>
-                            <td class="timestamp">2026-03-01 14:23:15</td>
-                            <td>customer-api-v2</td>
-                            <td><button class="btn-view btn-diagnosis" data-alert-id="1">View Diagnosis</button></td>
+                            <td class="model-name">LLM Proxy for Text Models</td>
+                            <td>
+                                <div class="provider-list">
+                                    <span class="provider-tag">OpenAI</span>
+                                    <span class="provider-tag">Gemini</span>
+                                </div>
+                            </td>
+                            <td>Model based</td>
+                            <td><span class="badge badge-active">Active</span></td>
+                            <td><button class="btn-request btn-access">Request Access</button></td>
+                            <td><button class="btn-request btn-curl">View</button></td>
                         </tr>
                         <tr>
-                            <td class="alert-name">Memory Threshold Exceeded</td>
-                            <td><span class="metric-tag metric-memory">Memory</span></td>
-                            <td><span class="badge badge-warning">Warning</span></td>
-                            <td class="timestamp">2026-03-01 13:45:32</td>
-                            <td>order-processing-service</td>
-                            <td><button class="btn-view btn-diagnosis" data-alert-id="2">View Diagnosis</button></td>
+                            <td class="model-name">LLM Proxy for Image Models</td>
+                            <td>
+                                <div class="provider-list">
+                                    <span class="provider-tag">Gemini</span>
+                                </div>
+                            </td>
+                            <td>Semantic</td>
+                            <td><span class="badge badge-active">Active</span></td>
+                            <td><button class="btn-request btn-access">Request Access</button></td>
+                            <td><button class="btn-request btn-curl">View</button></td>
                         </tr>
                         <tr>
-                            <td class="alert-name">Disk Space Low</td>
-                            <td><span class="metric-tag metric-disk">Disk</span></td>
-                            <td><span class="badge badge-warning">Warning</span></td>
-                            <td class="timestamp">2026-03-01 12:10:47</td>
-                            <td>logging-service</td>
-                            <td><button class="btn-view btn-diagnosis" data-alert-id="3">View Diagnosis</button></td>
-                        </tr>
-                        <tr>
-                            <td class="alert-name">Network Latency Spike</td>
-                            <td><span class="metric-tag metric-network">Network</span></td>
-                            <td><span class="badge badge-info">Info</span></td>
-                            <td class="timestamp">2026-03-01 11:30:22</td>
-                            <td>api-gateway</td>
-                            <td><button class="btn-view btn-diagnosis" data-alert-id="4">View Diagnosis</button></td>
-                        </tr>
-                        <tr>
-                            <td class="alert-name">CPU Usage Normalized</td>
-                            <td><span class="metric-tag metric-cpu">CPU</span></td>
-                            <td><span class="badge badge-info">Info</span></td>
-                            <td class="timestamp">2026-03-01 10:15:08</td>
-                            <td>payment-service</td>
-                            <td><button class="btn-view btn-diagnosis" data-alert-id="5">View Diagnosis</button></td>
-                        </tr>
-                        <tr>
-                            <td class="alert-name">Memory Leak Suspected</td>
-                            <td><span class="metric-tag metric-memory">Memory</span></td>
-                            <td><span class="badge badge-critical">Critical</span></td>
-                            <td class="timestamp">2026-03-01 09:42:55</td>
-                            <td>notification-service</td>
-                            <td><button class="btn-view btn-diagnosis" data-alert-id="6">View Diagnosis</button></td>
+                            <td class="model-name">LLM Proxy for Text Models</td>
+                            <td>
+                                <div class="provider-list">
+                                    <span class="provider-tag">OpenAI</span>
+                                    <span class="provider-tag">Gemini</span>
+                                </div>
+                            </td>
+                            <td>Latency based</td>
+                            <td><span class="badge badge-active">Active</span></td>
+                            <td><button class="btn-request btn-access">Request Access</button></td>
+                            <td><button class="btn-request btn-curl">View</button></td>
                         </tr>
                     </tbody>
                 </table>
                 </div>
 
                 <div id="noResults" class="no-results" style="display: none;">
-                    <p>No alerts found matching your filters.</p>
+                    <p>No proxies found matching your filters.</p>
                     <p class="no-results-hint">Try adjusting your search criteria or <a href="#" id="clearFromMessage">clear all filters</a>.</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Diagnosis Modal -->
-    <div id="diagnosisModal" class="modal">
+    <!-- Request Access Modal -->
+    <div id="accessModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title" id="modalAlertName">Alert Diagnosis</h3>
-                <span class="close" id="closeDiagnosisModal">&times;</span>
+                <h3 class="modal-title">Request Access</h3>
+                <span class="close" id="closeAccessModal">&times;</span>
             </div>
-            <div class="modal-body" id="diagnosisContent">
-                <!-- Content will be dynamically populated -->
+            <div class="modal-body">
+                <table class="form-table">
+                    <tr>
+                        <td class="form-label">SLA Tier</td>
+                        <td>
+                            <select class="form-input" id="slaTier">
+                                <option value="">Select SLA Tier</option>
+                                <option value="gold">Gold (1M Tokens/month)</option>
+                                <option value="silver">Silver (500K Tokens/month)</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-label">Client Application Name</td>
+                        <td>
+                            <input type="text" class="form-input" id="appName" placeholder="Enter your application name">
+                        </td>
+                    </tr>
+                </table>
             </div>
             <div class="modal-footer">
-                <button class="btn-close" id="closeDiagnosisBtn">Close</button>
+                <button class="btn-cancel" id="cancelAccessModal">Cancel</button>
+                <button class="btn-continue">Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Credentials Modal -->
+    <div id="credentialsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Access Credentials</h3>
+                <span class="close" id="closeCredsModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div style="margin-bottom: 20px;">
+                    <label class="credentials-label">Client ID</label>
+                    <div class="credentials-row">
+                        <input type="text" class="credentials-input" id="clientId" value="abc123def456ghi789jkl012mno345pqr" readonly>
+                        <button class="copy-btn" data-copy="clientId">
+                            <span>📋</span>
+                            <span class="copy-text">Copy</span>
+                        </button>
+                    </div>
+                </div>
+                <div>
+                    <label class="credentials-label">Client Secret</label>
+                    <div class="credentials-row">
+                        <input type="text" class="credentials-input" id="clientSecret" value="s3cr3t_k3y_xyz789abc123def456gh" readonly>
+                        <button class="copy-btn" data-copy="clientSecret">
+                            <span>📋</span>
+                            <span class="copy-text">Copy</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-continue" id="doneBtn">Done</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Alert diagnosis data
-        const alertDiagnosis = {
-            '1': {
-                name: 'High CPU Usage Detected',
-                metric: 'CPU',
-                severity: 'Critical',
-                timestamp: '2026-03-01 14:23:15',
-                application: 'customer-api-v2',
-                description: 'CPU usage exceeded 85% threshold for more than 5 minutes.',
-                metrics: {
-                    current: '92%',
-                    threshold: '85%',
-                    duration: '8 minutes',
-                    affectedInstances: '3 of 5 instances'
-                },
-                rootCause: 'High request volume combined with inefficient query processing',
-                recommendations: [
-                    'Scale up application instances to handle increased load',
-                    'Review and optimize database queries showing high execution time',
-                    'Implement caching for frequently accessed data',
-                    'Consider implementing rate limiting to prevent resource exhaustion'
-                ],
-                logs: 'INFO: Request processing time: 2.3s (avg: 0.5s)\nWARN: Database query timeout threshold reached\nERROR: Connection pool exhausted'
-            },
-            '2': {
-                name: 'Memory Threshold Exceeded',
-                metric: 'Memory',
-                severity: 'Warning',
-                timestamp: '2026-03-01 13:45:32',
-                application: 'order-processing-service',
-                description: 'Memory usage reached 78% of allocated capacity.',
-                metrics: {
-                    current: '78%',
-                    threshold: '75%',
-                    duration: '12 minutes',
-                    affectedInstances: '2 of 4 instances'
-                },
-                rootCause: 'Large batch processing operation with insufficient garbage collection',
-                recommendations: [
-                    'Increase JVM heap size for the application',
-                    'Optimize batch processing to handle smaller chunks',
-                    'Review object lifecycle and ensure proper garbage collection',
-                    'Consider implementing streaming processing instead of batch'
-                ],
-                logs: 'INFO: Batch size: 10000 records\nWARN: GC pause time: 1.2s\nINFO: Memory after GC: 72%'
-            },
-            '3': {
-                name: 'Disk Space Low',
-                metric: 'Disk',
-                severity: 'Warning',
-                timestamp: '2026-03-01 12:10:47',
-                application: 'logging-service',
-                description: 'Disk usage exceeded 80% on logging volume.',
-                metrics: {
-                    current: '83%',
-                    threshold: '80%',
-                    availableSpace: '17GB of 100GB',
-                    growthRate: '2GB per day'
-                },
-                rootCause: 'Log files not being rotated and archived properly',
-                recommendations: [
-                    'Implement log rotation policy (daily or size-based)',
-                    'Archive old logs to object storage (S3, etc.)',
-                    'Reduce log verbosity in production environment',
-                    'Set up automated cleanup for logs older than 30 days'
-                ],
-                logs: 'INFO: Total log files: 1247\nWARN: Oldest log file: 2025-11-15\nINFO: Largest file: application.log (4.2GB)'
-            },
-            '4': {
-                name: 'Network Latency Spike',
-                metric: 'Network',
-                severity: 'Info',
-                timestamp: '2026-03-01 11:30:22',
-                application: 'api-gateway',
-                description: 'Network latency increased to 250ms (baseline: 50ms).',
-                metrics: {
-                    current: '250ms',
-                    baseline: '50ms',
-                    duration: '3 minutes',
-                    affectedRoutes: 'All downstream services'
-                },
-                rootCause: 'Temporary network congestion during backup operation',
-                recommendations: [
-                    'Schedule backup operations during low-traffic periods',
-                    'Implement QoS policies to prioritize application traffic',
-                    'Consider using dedicated backup network interface',
-                    'Monitor network bandwidth utilization'
-                ],
-                logs: 'INFO: Backup job started at 11:28:00\nWARN: Network utilization: 85%\nINFO: Latency normalized at 11:33:15'
-            },
-            '5': {
-                name: 'CPU Usage Normalized',
-                metric: 'CPU',
-                severity: 'Info',
-                timestamp: '2026-03-01 10:15:08',
-                application: 'payment-service',
-                description: 'CPU usage returned to normal levels after previous spike.',
-                metrics: {
-                    current: '45%',
-                    previous: '88%',
-                    normalizedAt: '10:15:08',
-                    duration: '15 minutes'
-                },
-                rootCause: 'Scheduled data migration task completed successfully',
-                recommendations: [
-                    'No action required - alert resolved',
-                    'Consider scheduling intensive tasks during maintenance windows',
-                    'Monitor for recurring patterns'
-                ],
-                logs: 'INFO: Data migration completed: 50000 records\nINFO: CPU usage: 45%\nINFO: All systems normal'
-            },
-            '6': {
-                name: 'Memory Leak Suspected',
-                metric: 'Memory',
-                severity: 'Critical',
-                timestamp: '2026-03-01 09:42:55',
-                application: 'notification-service',
-                description: 'Memory usage continuously increasing over 2 hours despite stable load.',
-                metrics: {
-                    current: '95%',
-                    threshold: '85%',
-                    growthRate: '5% per hour',
-                    affectedInstances: '1 of 3 instances'
-                },
-                rootCause: 'Unclosed connections and event listeners accumulating in memory',
-                recommendations: [
-                    'Restart affected instance immediately to prevent crash',
-                    'Review code for proper resource cleanup (connections, streams, listeners)',
-                    'Implement heap dump analysis to identify leak source',
-                    'Add monitoring for connection pool metrics',
-                    'Consider implementing circuit breakers for external dependencies'
-                ],
-                logs: 'WARN: Open connections: 2456 (expected: ~100)\nERROR: OutOfMemoryError imminent\nWARN: GC overhead limit exceeded'
-            }
-        };
-
         // Get modal elements
-        const diagnosisModal = document.getElementById('diagnosisModal');
-        const closeDiagnosisModalBtn = document.getElementById('closeDiagnosisModal');
-        const closeDiagnosisBtn = document.getElementById('closeDiagnosisBtn');
-        const diagnosisBtns = document.querySelectorAll('.btn-diagnosis');
+        const accessModal = document.getElementById('accessModal');
+        const credentialsModal = document.getElementById('credentialsModal');
 
-        // Open diagnosis modal
-        diagnosisBtns.forEach(btn => {
+        const closeAccessModalBtn = document.getElementById('closeAccessModal');
+        const closeCredsModalBtn = document.getElementById('closeCredsModal');
+        const cancelAccessModalBtn = document.getElementById('cancelAccessModal');
+        const continueBtn = document.querySelector('.btn-continue');
+        const doneBtn = document.getElementById('doneBtn');
+        const requestBtns = document.querySelectorAll('.btn-access');
+
+        // Open access modal when any Request Access button is clicked
+        requestBtns.forEach(btn => {
             btn.addEventListener('click', () => {
-                const alertId = btn.getAttribute('data-alert-id');
-                const diagnosis = alertDiagnosis[alertId];
-
-                if (diagnosis) {
-                    document.getElementById('modalAlertName').textContent = diagnosis.name;
-
-                    const content = `
-                        <div class="diagnosis-section">
-                            <div class="diagnosis-heading">📊 Alert Details</div>
-                            <div class="diagnosis-content">
-                                <div class="diagnosis-item"><span class="diagnosis-label">Application:</span> ${diagnosis.application}</div>
-                                <div class="diagnosis-item"><span class="diagnosis-label">Timestamp:</span> ${diagnosis.timestamp}</div>
-                                <div class="diagnosis-item"><span class="diagnosis-label">Severity:</span> <span class="badge badge-${diagnosis.severity.toLowerCase()}">${diagnosis.severity}</span></div>
-                                <div class="diagnosis-item"><span class="diagnosis-label">Metric Type:</span> ${diagnosis.metric}</div>
-                                <div class="diagnosis-item"><span class="diagnosis-label">Description:</span> ${diagnosis.description}</div>
-                            </div>
-                        </div>
-
-                        <div class="diagnosis-section">
-                            <div class="diagnosis-heading">📈 Metric Values</div>
-                            <div class="diagnosis-content">
-                                ${Object.entries(diagnosis.metrics).map(([key, value]) =>
-                                    `<div class="diagnosis-item"><span class="diagnosis-label">${key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}:</span> ${value}</div>`
-                                ).join('')}
-                            </div>
-                        </div>
-
-                        <div class="diagnosis-section">
-                            <div class="diagnosis-heading">🔍 Root Cause Analysis</div>
-                            <div class="diagnosis-content">
-                                <div class="diagnosis-item">${diagnosis.rootCause}</div>
-                            </div>
-                        </div>
-
-                        <div class="diagnosis-section">
-                            <div class="diagnosis-heading">💡 Recommendations</div>
-                            <div class="diagnosis-content">
-                                <ul class="recommendation-list">
-                                    ${diagnosis.recommendations.map(rec => `<li>${rec}</li>`).join('')}
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div class="diagnosis-section">
-                            <div class="diagnosis-heading">📝 Related Logs</div>
-                            <div class="diagnosis-content">
-                                <div class="code-block">${diagnosis.logs}</div>
-                            </div>
-                        </div>
-                    `;
-
-                    document.getElementById('diagnosisContent').innerHTML = content;
-                    diagnosisModal.style.display = 'block';
-                }
+                accessModal.style.display = 'block';
             });
         });
 
-        // Close diagnosis modal
-        closeDiagnosisModalBtn.addEventListener('click', () => {
-            diagnosisModal.style.display = 'none';
+        // Close access modal when X is clicked
+        closeAccessModalBtn.addEventListener('click', () => {
+            accessModal.style.display = 'none';
         });
 
-        closeDiagnosisBtn.addEventListener('click', () => {
-            diagnosisModal.style.display = 'none';
+        // Close access modal when Cancel is clicked
+        cancelAccessModalBtn.addEventListener('click', () => {
+            accessModal.style.display = 'none';
         });
 
-        // Close modal when clicking outside
+        // Close credentials modal when X is clicked
+        closeCredsModalBtn.addEventListener('click', () => {
+            credentialsModal.style.display = 'none';
+        });
+
+        // Close credentials modal when Done is clicked
+        doneBtn.addEventListener('click', () => {
+            credentialsModal.style.display = 'none';
+        });
+
+        // Close modals when clicking outside of them
         window.addEventListener('click', (e) => {
-            if (e.target === diagnosisModal) {
-                diagnosisModal.style.display = 'none';
+            if (e.target === accessModal) {
+                accessModal.style.display = 'none';
             }
+            if (e.target === credentialsModal) {
+                credentialsModal.style.display = 'none';
+            }
+        });
+
+        // Continue button action - show credentials modal
+        continueBtn.addEventListener('click', () => {
+            const slaTier = document.getElementById('slaTier').value;
+            const appName = document.getElementById('appName').value;
+
+            if (!slaTier) {
+                alert('Please select an SLA Tier');
+                return;
+            }
+            if (!appName) {
+                alert('Please enter a Client Application Name');
+                return;
+            }
+
+            // Close access modal and open credentials modal
+            accessModal.style.display = 'none';
+            credentialsModal.style.display = 'block';
+        });
+
+        // Copy functionality
+        const copyBtns = document.querySelectorAll('.copy-btn');
+        copyBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.getAttribute('data-copy');
+                const input = document.getElementById(targetId);
+                const copyText = btn.querySelector('.copy-text');
+
+                // Copy to clipboard
+                input.select();
+                document.execCommand('copy');
+
+                // Visual feedback
+                btn.classList.add('copied');
+                copyText.textContent = 'Copied!';
+
+                // Reset after 2 seconds
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    copyText.textContent = 'Copy';
+                }, 2000);
+            });
         });
 
         // ========== FILTERING FUNCTIONALITY ==========
@@ -963,15 +875,17 @@
         // Filter state
         const filterState = {
             search: '',
-            metric: 'all',
-            severity: 'all'
+            provider: 'all',
+            routing: 'all',
+            status: 'all'
         };
 
         // DOM element references
         const elements = {
             searchInput: document.getElementById('searchInput'),
-            metricSelect: document.getElementById('metricFilter'),
-            severitySelect: document.getElementById('severityFilter'),
+            providerSelect: document.getElementById('providerFilter'),
+            routingSelect: document.getElementById('routingFilter'),
+            statusSelect: document.getElementById('statusFilter'),
             clearBtn: document.getElementById('clearFiltersBtn'),
             clearLink: document.getElementById('clearFromMessage'),
             tableRows: document.querySelectorAll('tbody tr'),
@@ -982,18 +896,21 @@
         function getRowData(row) {
             const cells = row.querySelectorAll('td');
 
-            // Get alert name (first cell)
-            const alertName = cells[0].textContent.trim();
+            // Get proxy name (first cell)
+            const proxyName = cells[0].textContent.trim();
 
-            // Get metric type (from metric tag in second cell)
-            const metricTag = cells[1].querySelector('.metric-tag');
-            const metric = metricTag ? metricTag.textContent.trim() : '';
+            // Get providers (extract from provider tags)
+            const providerTags = cells[1].querySelectorAll('.provider-tag');
+            const providers = Array.from(providerTags).map(tag => tag.textContent.trim());
 
-            // Get severity (from badge in third cell)
-            const severityBadge = cells[2].querySelector('.badge');
-            const severity = severityBadge ? severityBadge.textContent.trim() : '';
+            // Get routing strategy (third cell)
+            const routing = cells[2].textContent.trim();
 
-            return { alertName, metric, severity };
+            // Get status (from badge in fourth cell)
+            const statusBadge = cells[3].querySelector('.badge');
+            const status = statusBadge ? statusBadge.textContent.trim() : '';
+
+            return { proxyName, providers, routing, status };
         }
 
         // Check if row matches current filters
@@ -1001,18 +918,22 @@
             // Search term match (case-insensitive partial match)
             const searchTerm = filterState.search.toLowerCase().trim();
             const matchesSearch = !searchTerm ||
-                rowData.alertName.toLowerCase().includes(searchTerm);
+                rowData.proxyName.toLowerCase().includes(searchTerm);
 
-            // Metric match
-            const matchesMetric = filterState.metric === 'all' ||
-                rowData.metric === filterState.metric;
+            // Provider match
+            const matchesProvider = filterState.provider === 'all' ||
+                rowData.providers.includes(filterState.provider);
 
-            // Severity match
-            const matchesSeverity = filterState.severity === 'all' ||
-                rowData.severity === filterState.severity;
+            // Routing strategy match
+            const matchesRouting = filterState.routing === 'all' ||
+                rowData.routing === filterState.routing;
+
+            // Status match
+            const matchesStatus = filterState.status === 'all' ||
+                rowData.status === filterState.status;
 
             // AND logic - all conditions must be true
-            return matchesSearch && matchesMetric && matchesSeverity;
+            return matchesSearch && matchesProvider && matchesRouting && matchesStatus;
         }
 
         // Apply filters to table rows
@@ -1051,8 +972,9 @@
         function updateClearButtonVisibility() {
             const hasActiveFilters =
                 filterState.search !== '' ||
-                filterState.metric !== 'all' ||
-                filterState.severity !== 'all';
+                filterState.provider !== 'all' ||
+                filterState.routing !== 'all' ||
+                filterState.status !== 'all';
 
             elements.clearBtn.style.display = hasActiveFilters ? 'block' : 'none';
         }
@@ -1061,13 +983,15 @@
         function resetFilters() {
             // Reset filter state
             filterState.search = '';
-            filterState.metric = 'all';
-            filterState.severity = 'all';
+            filterState.provider = 'all';
+            filterState.routing = 'all';
+            filterState.status = 'all';
 
             // Reset form controls
             elements.searchInput.value = '';
-            elements.metricSelect.value = 'all';
-            elements.severitySelect.value = 'all';
+            elements.providerSelect.value = 'all';
+            elements.routingSelect.value = 'all';
+            elements.statusSelect.value = 'all';
 
             // Apply filters (will show all rows)
             applyFilters();
@@ -1079,13 +1003,18 @@
             applyFilters();
         });
 
-        elements.metricSelect.addEventListener('change', (e) => {
-            filterState.metric = e.target.value;
+        elements.providerSelect.addEventListener('change', (e) => {
+            filterState.provider = e.target.value;
             applyFilters();
         });
 
-        elements.severitySelect.addEventListener('change', (e) => {
-            filterState.severity = e.target.value;
+        elements.routingSelect.addEventListener('change', (e) => {
+            filterState.routing = e.target.value;
+            applyFilters();
+        });
+
+        elements.statusSelect.addEventListener('change', (e) => {
+            filterState.status = e.target.value;
             applyFilters();
         });
 
