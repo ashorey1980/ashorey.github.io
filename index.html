@@ -551,6 +551,165 @@
             background-color: #0081b3;
         }
 
+        /* Slack Notification Overlay */
+        .slack-notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 360px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            z-index: 2000;
+            animation: slideInUp 0.4s ease-out;
+        }
+
+        @keyframes slideInUp {
+            from {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .slack-notification-header {
+            background-color: #4a154b;
+            color: white;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .slack-notification-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .slack-icon {
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: #4a154b;
+        }
+
+        .slack-close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .slack-close-btn:hover {
+            opacity: 1;
+        }
+
+        .slack-notification-body {
+            padding: 16px;
+        }
+
+        .slack-channel {
+            font-weight: 600;
+            color: #1264a3;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .slack-timestamp {
+            font-size: 12px;
+            color: #616061;
+            margin-bottom: 12px;
+        }
+
+        .slack-message {
+            font-size: 14px;
+            color: #1d1c1d;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .slack-alert-details {
+            background-color: #f8f8f8;
+            border-left: 3px solid #e01e5a;
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .slack-detail-row {
+            display: flex;
+            margin-bottom: 6px;
+        }
+
+        .slack-detail-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .slack-detail-label {
+            font-weight: 600;
+            min-width: 100px;
+            color: #1d1c1d;
+        }
+
+        .slack-detail-value {
+            color: #616061;
+        }
+
+        .slack-notification-footer {
+            padding: 12px 16px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 8px;
+        }
+
+        .slack-btn {
+            flex: 1;
+            padding: 8px 16px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            background: white;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .slack-btn:hover {
+            background-color: #f8f8f8;
+        }
+
+        .slack-btn-primary {
+            background-color: #007a5a;
+            color: white;
+            border-color: #007a5a;
+        }
+
+        .slack-btn-primary:hover {
+            background-color: #006644;
+        }
+
         .modal-footer {
             padding: 20px 30px;
             border-top: 1px solid #e0e0e0;
@@ -735,6 +894,46 @@
                     <p class="no-results-hint">Try adjusting your search criteria or <a href="#" id="clearFromMessage">clear all filters</a>.</p>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Slack Notification Overlay -->
+    <div id="slackNotification" class="slack-notification">
+        <div class="slack-notification-header">
+            <div class="slack-notification-logo">
+                <div class="slack-icon">#</div>
+                <span>Anypoint Alerts</span>
+            </div>
+            <button class="slack-close-btn" id="closeSlackNotification">&times;</button>
+        </div>
+        <div class="slack-notification-body">
+            <div class="slack-channel">#monitoring-alerts</div>
+            <div class="slack-timestamp">Just now</div>
+            <div class="slack-message">
+                🚨 <strong>Critical Alert:</strong> High CPU usage detected on customer-api-v2
+            </div>
+            <div class="slack-alert-details">
+                <div class="slack-detail-row">
+                    <span class="slack-detail-label">Application:</span>
+                    <span class="slack-detail-value">customer-api-v2</span>
+                </div>
+                <div class="slack-detail-row">
+                    <span class="slack-detail-label">Metric:</span>
+                    <span class="slack-detail-value">CPU Usage: 92%</span>
+                </div>
+                <div class="slack-detail-row">
+                    <span class="slack-detail-label">Threshold:</span>
+                    <span class="slack-detail-value">85% exceeded</span>
+                </div>
+                <div class="slack-detail-row">
+                    <span class="slack-detail-label">Duration:</span>
+                    <span class="slack-detail-value">8 minutes</span>
+                </div>
+            </div>
+        </div>
+        <div class="slack-notification-footer">
+            <button class="slack-btn" id="slackDismiss">Dismiss</button>
+            <button class="slack-btn slack-btn-primary" id="slackViewAlert">View Alert</button>
         </div>
     </div>
 
@@ -976,6 +1175,33 @@
         window.addEventListener('click', (e) => {
             if (e.target === diagnosisModal) {
                 diagnosisModal.style.display = 'none';
+            }
+        });
+
+        // ========== SLACK NOTIFICATION FUNCTIONALITY ==========
+
+        // Get Slack notification elements
+        const slackNotification = document.getElementById('slackNotification');
+        const closeSlackBtn = document.getElementById('closeSlackNotification');
+        const slackDismissBtn = document.getElementById('slackDismiss');
+        const slackViewAlertBtn = document.getElementById('slackViewAlert');
+
+        // Close Slack notification
+        closeSlackBtn.addEventListener('click', () => {
+            slackNotification.style.display = 'none';
+        });
+
+        slackDismissBtn.addEventListener('click', () => {
+            slackNotification.style.display = 'none';
+        });
+
+        // View Alert button - opens the first alert diagnosis
+        slackViewAlertBtn.addEventListener('click', () => {
+            slackNotification.style.display = 'none';
+            // Trigger click on first diagnosis button
+            const firstDiagnosisBtn = document.querySelector('[data-alert-id="1"]');
+            if (firstDiagnosisBtn) {
+                firstDiagnosisBtn.click();
             }
         });
 
