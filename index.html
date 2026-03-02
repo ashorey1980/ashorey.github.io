@@ -772,7 +772,7 @@
                 },
                 rootCause: 'High request volume combined with inefficient query processing',
                 recommendations: [
-                    'Scale up application instances to handle increased load',
+                    'Initiate horizontal auto scaling to 3 PODs',
                     'Review and optimize database queries showing high execution time',
                     'Implement caching for frequently accessed data',
                     'Consider implementing rate limiting to prevent resource exhaustion'
@@ -941,9 +941,9 @@
                             <div class="diagnosis-content">
                                 <ul class="recommendation-list">
                                     ${diagnosis.recommendations.map((rec, index) => {
-                                        // Add "Take Action" button for first recommendation of alert 1
+                                        // Add "Allow Diagnostic Agent to proceed" button for first recommendation of alert 1
                                         const showButton = alertId === '1' && index === 0;
-                                        return `<li>${rec}${showButton ? ' <button class="btn-take-action" onclick="alert(\'Action triggered: Scaling up application instances...\')">Take Action</button>' : ''}</li>`;
+                                        return `<li>${rec}${showButton ? ' <button class="btn-take-action" onclick="alert(\'Action triggered: Scaling up application instances...\')">Allow Diagnostic Agent to proceed</button>' : ''}</li>`;
                                     }).join('')}
                                 </ul>
                             </div>
